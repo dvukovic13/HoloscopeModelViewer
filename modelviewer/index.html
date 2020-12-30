@@ -1,0 +1,106 @@
+ <!DOCTYPE html>
+ <html>
+     <head>
+        <title>MODELVIEWER TEST</title>
+
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+        <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+        <meta name="viewport">
+
+        <style>
+             button.hot{
+                display: block;
+                width: 30px;
+                height: 30px;
+                border-radius: 10px;
+                border: none;
+                background-color:yellowgreen ;
+                box-sizing: border-box;
+             }
+             #drugi{
+                 background-color: yellow;
+             }
+
+             button.kontrola{
+                 display: inline-block;
+                 width: 50px;
+                 height: 30px;
+                 background-color: teal;
+                 color: thistle;
+             }
+        </style>
+
+     </head>
+     <body>
+         <div style="background-color: aquamarine; width: 1500px; height:800px ">
+            <model-viewer id = "model" src="assets/Astronaut.gltf" alt="A 3D model of an astronaut"  ar camera-controls style="width: 100%; height: 100%;">
+                <button class="hot" id="prvi" slot="hotspot-one" data-position="0 2.5 0.7" data-normal="0 2.5 0.7"></button>
+                <button class="hot" id="drugi" slot="hotspot-two" data-position="0 3.5 0.7" data-normal="0 4 0.7"></button>
+                <button class="kontrola" style="margin-top: 10px; margin-left: 10px;">Zavrti</button>
+            </model-viewer>
+            
+            
+            <script>
+                const modelViewer = document.querySelector("#model");
+                const body = modelViewer.querySelector("#prvi");
+                const head = modelViewer.querySelector("#drugi");
+
+                var dimenzije;
+                const rect = modelViewer.getBoundingClientRect();
+
+                modelViewer.addEventListener('load', (event) =>{
+                    dimenzije = () =>{
+                    x = modelViewer.getDimensions().x;
+                    y = modelViewer.getDimensions().y;
+                    z = modelViewer.getDimensions().z;
+
+                    return [x,y,z];
+                }
+                });
+                modelViewer.addEventListener('mouseup', (event) => {
+                   // console.log(event.target.model);
+                  //  console.log(event.data);
+
+                    var x = event.clientX - rect.left;
+                    var y = event.clientY - rect.top;
+
+                    if(modelViewer.positionAndNormalFromPoint(x, y))
+                        console.log(modelViewer.positionAndNormalFromPoint(x, y));
+
+                    if(event.target === body){
+                        console.log("kliknuo si na body");
+                        console.log(body);
+                        console.log(modelViewer.cameraTarget);
+                        modelViewer.cameraTarget = "0 1.5m -3.5m";
+                        console.log(modelViewer.cameraTarget);
+                        //console.log(modelViewer.cameraOrbit = "0deg 75deg 150%");
+                        
+                    }
+                    else if(event.target === head){
+                        console.log("kliknuo si na glavu");
+                        console.log(modelViewer.cameraTarget);
+                        modelViewer.cameraTarget = "0 2.3m -3.5m";
+                        console.log(modelViewer.cameraTarget);
+                        //console.log(modelViewer.cameraOrbit = "0deg 75deg 150%");
+                        
+                    }
+                    else{
+                        modelViewer.cameraTarget = "0 0 0";
+                    }
+                  
+                    
+                    
+                });
+               
+                modelViewer.addEventListener('load', (event) => {
+                    console.log("model je ucitan");
+                    console.log(modelViewer.getDimensions());
+                });
+
+            </script>
+
+         </div>
+
+     </body>
+
+ </html>
