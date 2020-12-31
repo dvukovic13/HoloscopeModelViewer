@@ -14,17 +14,17 @@
                 height: 30px;
                 border-radius: 10px;
                 border: none;
-                background-color:yellowgreen ;
+                background-color:red ;
                 box-sizing: border-box;
              }
              #drugi{
-                 background-color: yellow;
+                 background-color: green;
              }
 
              button.kontrola{
                  display: inline-block;
-                 width: 50px;
-                 height: 30px;
+                 width: 70px;
+                 height: 50px;
                  background-color: teal;
                  color: thistle;
              }
@@ -33,10 +33,11 @@
      </head>
      <body>
          <div style="background-color: aquamarine; width: 1500px; height:800px ">
-            <model-viewer id = "model" src="assets/Astronaut.gltf" alt="A 3D model of an astronaut"  ar camera-controls style="width: 100%; height: 100%;">
-                <button class="hot" id="prvi" slot="hotspot-one" data-position="0 2.5 0.7" data-normal="0 2.5 0.7"></button>
-                <button class="hot" id="drugi" slot="hotspot-two" data-position="0 3.5 0.7" data-normal="0 4 0.7"></button>
-                <button class="kontrola" style="margin-top: 10px; margin-left: 10px;">Zavrti</button>
+            <model-viewer id = "model" src="assets/r2d2_test3.glb" alt="A 3D model of an astronaut"  ar camera-controls style="width: 100%; height: 100%;" animation-name="ГоловаAction">
+                <button class="hot" id="prvi" slot="hotspot-one" data-position="-0.03 3.7 0.2" data-normal="-0.03 3.7 0.2"></button>
+                <button class="hot" id="drugi" slot="hotspot-two" data-position="-0.03 4 0.1" data-normal="-0.03 4 0.1"></button>
+                <button class="kontrola" id="animacija1" style="margin-top: 10px; margin-left: 10px;">Pokreni</button>
+                <button class="kontrola" id="stop" style="margin-top: 90px; display: :block">Zaustavi</button>
             </model-viewer>
             
             
@@ -44,18 +45,24 @@
                 const modelViewer = document.querySelector("#model");
                 const body = modelViewer.querySelector("#prvi");
                 const head = modelViewer.querySelector("#drugi");
+                const animacija1 = modelViewer.querySelector("#drugi");
+                const stop = modelViewer.querySelector("#prvi");
 
-                var dimenzije;
                 const rect = modelViewer.getBoundingClientRect();
 
-                modelViewer.addEventListener('load', (event) =>{
-                    dimenzije = () =>{
-                    x = modelViewer.getDimensions().x;
-                    y = modelViewer.getDimensions().y;
-                    z = modelViewer.getDimensions().z;
+                var dimenzije;
+                var defaultCamTarget;
+                var defaultCamOrbit;
+                
 
-                    return [x,y,z];
-                }
+                modelViewer.addEventListener('load', (event) =>{
+                    dimenzije = modelViewer.getDimensions().toString();
+                    defaultCamTarget = modelViewer.cameraTarget;
+                    defaultCamOrbit = modelViewer.cameraOrbit;
+
+                    console.log(defaultCamTarget);
+                    console.log(defaultCamOrbit);
+                
                 });
                 modelViewer.addEventListener('mouseup', (event) => {
                    // console.log(event.target.model);
@@ -63,11 +70,13 @@
 
                     var x = event.clientX - rect.left;
                     var y = event.clientY - rect.top;
+                    
+                    
 
                     if(modelViewer.positionAndNormalFromPoint(x, y))
                         console.log(modelViewer.positionAndNormalFromPoint(x, y));
 
-                    if(event.target === body){
+                   /* if(event.target === body){
                         console.log("kliknuo si na body");
                         console.log(body);
                         console.log(modelViewer.cameraTarget);
@@ -78,11 +87,25 @@
                     }
                     else if(event.target === head){
                         console.log("kliknuo si na glavu");
+                        var prethodna = modelViewer.cameraTarget;
                         console.log(modelViewer.cameraTarget);
-                        modelViewer.cameraTarget = "0 2.3m -3.5m";
+                        console.log(head.dataPosition);
+                        //modelViewer.cameraTarget = "0 2.3m -3.5m";
+
+                        modelViewer.cameraTarget = modelViewer.positionAndNormalFromPoint(x, y).position.x.toString() + "m " + modelViewer.positionAndNormalFromPoint(x, y).position.y.toString() + "m " + (modelViewer.positionAndNormalFromPoint(x, y).position.z - 3).toString() + "m ";
+
+                        //modelViewer.cameraOrbit = head.dataPosition;
                         console.log(modelViewer.cameraTarget);
                         //console.log(modelViewer.cameraOrbit = "0deg 75deg 150%");
                         
+                    }*/
+                    if(event.target === animacija1){
+                        console.log(animacija1);
+                        modelViewer.play();
+                    }
+                    else if(event.target === stop){
+                        console.log(animacija1);
+                        modelViewer.pause();
                     }
                     else{
                         modelViewer.cameraTarget = "0 0 0";
@@ -94,7 +117,7 @@
                
                 modelViewer.addEventListener('load', (event) => {
                     console.log("model je ucitan");
-                    console.log(modelViewer.getDimensions());
+                    console.log(modelViewer.getDimensions().toString());
                 });
 
             </script>
